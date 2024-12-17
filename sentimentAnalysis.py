@@ -2,22 +2,17 @@ import speech_recognition as sr
 from textblob import TextBlob
 import streamlit as st
 
-# Initialize recognizer
 recognizer = sr.Recognizer()
 
-# Function to capture audio and convert it to text
 def audio_to_text():
     with sr.Microphone() as source:
         st.info("Listening... Speak now!")
         
-        # Adjust for ambient noise and record the audio
         recognizer.adjust_for_ambient_noise(source)
         try:
-            # Set timeouts for listening
-            audio = recognizer.listen(source, timeout=10, phrase_time_limit=30)
+            audio = recognizer.listen(source)
             st.info("Recognizing...")
             
-            # Recognize speech using Google Web Speech API
             text = recognizer.recognize_google(audio)
             return text
         except sr.WaitTimeoutError:
@@ -30,10 +25,9 @@ def audio_to_text():
             st.error(f"Could not request results; {e}")
             return None
 
-# Function for sentiment analysis
 def analyze_sentiment(text):
     analysis = TextBlob(text)
-    sentiment_score = analysis.sentiment.polarity  # Polarity ranges from -1 to 1
+    sentiment_score = analysis.sentiment.polarity  
     if sentiment_score > 0:
         sentiment = "Positive"
     elif sentiment_score < 0:
@@ -42,7 +36,6 @@ def analyze_sentiment(text):
         sentiment = "Neutral"
     return sentiment, sentiment_score
 
-# Streamlit app
 def main():
     st.title("Speech-to-Text with Sentiment Analysis")
 
@@ -53,13 +46,11 @@ def main():
         if result:
             st.success(f"Transcribed Text: {result}")
 
-            # Perform sentiment analysis
             sentiment, score = analyze_sentiment(result)
             st.write(f"Sentiment: **{sentiment}**")
             st.write(f"Sentiment Score: **{score:.2f}**")
         else:
             st.warning("No speech was detected. Please try again.")
 
-# Run the Streamlit app
 if __name__ == "__main__":
     main()

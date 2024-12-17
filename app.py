@@ -3,7 +3,7 @@ from groq import Groq
 import streamlit as st
 
 client = Groq(
-    api_key=os.environ.get("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")  # Ensure the API key is set in the environment
+    api_key=os.environ.get("GROQ_API_KEY")  # Ensure the API key is set in the environment
 )
 
 st.title("Chatbot with Streamlit")
